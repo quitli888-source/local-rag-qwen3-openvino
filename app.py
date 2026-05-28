@@ -15,7 +15,7 @@ DB_PATH = os.path.join(BASE_DIR, "db")
 DATA_DIR = os.path.join(BASE_DIR, "data", "docs")
 
 # 默认设备配置
-LLM_DEVICE = "GPU.1"
+LLM_DEVICE = "GPU"
 EMBEDDING_DEVICE = "CPU"
 RERANKER_DEVICE = "CPU"
 

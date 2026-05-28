@@ -1,15 +1,15 @@
 # 本地 RAG 系统（OpenVINO + Qwen3）
 
-基于 Intel 酷睿 Ultra 处理器 + NVIDIA 独显的本地检索增强生成（RAG）系统。所有数据在本地处理，无需上传云端。
+基于 Intel 酷睿 Ultra 处理器的本地检索增强生成（RAG）系统。所有数据在本地处理，无需上传云端。
 
 ## 硬件环境
 
-| 组件 | 型号 | 用途 |
-|------|------|------|
-| CPU | Intel Core Ultra 9 275HX（24核） | 数据处理与协调 |
-| NPU | Intel AI Boost（13 TOPS） | Embedding/Reranker 低功耗推理 |
-| iGPU | Intel Graphics | OpenVINO 加速 |
-| dGPU | NVIDIA RTX 5070 Laptop（8GB） | LLM 推理（计划中） |
+| 组件 | 型号 | 实际用途 |
+|------|------|---------|
+| CPU | Intel Core Ultra 9 275HX（24核） | Embedding / Reranker 推理 + 数据处理 |
+| iGPU | Intel Graphics（GPU.0） | LLM（Qwen3-4B）推理加速 |
+| NPU | Intel AI Boost（13 TOPS） | 已识别，因动态维度限制暂未使用 |
+| dGPU | NVIDIA RTX 5070 Laptop（8GB） | OpenVINO 不支持 NVIDIA GPU，暂未使用 |
 | 内存 | 32GB DDR5 | 模型加载与运行 |
 
 ## 架构
@@ -36,7 +36,7 @@
 |------|------|------|------|------|
 | 向量化 | Qwen3-Embedding-0.6B | OpenVINO INT4 | 426 MB | CPU |
 | 重排序 | Qwen3-Reranker-0.6B | OpenVINO INT8 | 624 MB | CPU |
-| 生成 | Qwen3-4B | OpenVINO INT4 | 2.26 GB | CPU（计划改用 Ollama + GPU） |
+| 生成 | Qwen3-4B | OpenVINO INT4 | 2.26 GB | Intel iGPU（GPU.0） |
 
 ## 快速开始
 
@@ -95,8 +95,9 @@ python app.py
 
 ## 已知问题
 
-- OpenVINO 的 OpenCL 后端不支持 NVIDIA GPU，LLM 暂时只能用 CPU 推理
-- 计划通过 Ollama（CUDA）替代 OpenVINO 做 LLM 推理，以利用 RTX 5070 独显
+- **NPU 不支持动态维度**：OpenVINO 的 NPU 插件要求静态输入形状，而 Qwen3 Embedding/Reranker 模型使用动态维度，无法在 NPU 上运行
+- **OpenVINO 不支持 NVIDIA GPU**：OpenVINO 的 OpenCL 后端与 NVIDIA GPU 不兼容，RTX 5070 独显暂未利用
+- **改进方向**：通过 Ollama（CUDA）替代 OpenVINO 做 LLM 推理，以利用 RTX 5070 独显获得更高推理速度
 
 ## License
 
