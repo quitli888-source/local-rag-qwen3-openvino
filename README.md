@@ -1,5 +1,7 @@
 # 本地 RAG 系统（OpenVINO + Qwen3）
 
+![local-rag-qwen3-openvino Banner](assets/local_rag_banner.png)
+
 基于 Intel 酷睿 Ultra 处理器的本地检索增强生成（RAG）系统。所有数据在本地处理，无需上传云端。
 
 ## 硬件环境
